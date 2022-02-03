@@ -2,43 +2,46 @@
 
 namespace App\DataFixtures;
 
+use Faker\Factory;
 use App\Entity\Article;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManagerAware;
-use Doctrine\DBAL\Driver\IBMDB2\Exception\Factory;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class ArticleFixtures extends Fixture
+class ArticleFixtures extends Fixture implements DependentFixtureInterface
 {
 
-    // private \Faker\Generator $faker;
+    private \Faker\Generator $faker;
     private ObjectManager $manager; 
     // private SluggerInterface $slugger;
-
-
 
     // public function __construct(SluggerInterface $slugger)
     // {
     //     $this->slugger = $slugger;
     // }
 
-
-
-
     public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
 
-        // $this->faker = Factory::create();
+        $this->faker = Factory::create();
 
         $this->generateArticles(6);
 
         $this->manager->flush();
     }
 
-
+    public function getDependencies()
+    {
+        return [
+            PictureFixtures::class,
+            AuthorFixtures::class,
+            CategoryFixtures::class
+        ];
+    }
 
     private function generateArticles(int $number): void
     {
@@ -54,20 +57,24 @@ class ArticleFixtures extends Fixture
             // $title = $this->faker->sentence();
 
             // $slug = $this->slugger->slug(strtolower($title)) . '-' . $dateString;
+
+            $picture = $this->getReference("picture{$i}");
             
-            $article->setTitle("Article {$i}")
-                    ->setContent("Hello world")
+            $article->setTitle("Article {$i}") // remplacer par $title
+                    ->setContent("Hello world") //$this->faker->paragraph();
                     ->setSlug("article-{$i}-{$dateString}") // remplacer par $slug 
                     ->setCreatedAt($dateObject)
-                    ->setIsPublished(false);
+                    ->setIsPublished(false)
+                    ->setAuthor($this->getReference("author" . mt_rand(1, 2)))
+                    ->addCategory($this->getReference("category" . mt_rand(1, 3)))
+                    ->setPicture($picture);
             
             $this->manager->persist($article);
 
+            $picture->setArticle($article);
+
         }
     }
-
-
-    
         
     /**
      * generate a random DateTimeImmutable object and related date string between a start date and an end date.
