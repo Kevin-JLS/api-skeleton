@@ -1,7 +1,21 @@
 parameters:
+
+    level: 8
+
+    paths: 
+        - src
+
+    # excludes_analyse: 
+        # - src/Datafixtures
+
     checkGenericClassInNonGenericObjectType: false
+
     ignoreErrors:
-        -
-          message: '#Property [a-zA-Z0-9\\_]+::\$id is never written, only read.#'
+        - message: '#Property [a-zA-Z0-9\\_]+::\$id is never written, only read.#'
           path: src/*
+        - '|Parameter #1 \$author of method App\\Entity\\Article::setAuthor\(\) expects App\\Entity\\Author, object given.|'
+        - '|Parameter #1 \$category of method App\\Entity\\Article::addCategory\(\) expects App\\Entity\\Category, object given.|'
+        - '|Parameter #1 \$picture of method App\\Entity\\Article::setPicture\(\) expects App\\Entity\\Picture, object given.|'
+        - '|Call to an undefined method object::setArticle\(\).|'
+        - '|Property App\\DataFixtures\\ArticleFixtures::\$faker is never read, only written.|'
           
