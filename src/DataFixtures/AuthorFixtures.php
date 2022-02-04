@@ -27,7 +27,7 @@ class AuthorFixtures extends Fixture
 
     private function generateAuthors(int $number): void 
     {
-        for ($i = 0; $i <= $number; $i++) {
+        for ($i = 0; $i < $number; $i++) {
 
             $author = (new Author())->setName($this->faker->name());
             // $author = (new Author())->setName("Test");
