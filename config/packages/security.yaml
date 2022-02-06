@@ -24,7 +24,8 @@ security:
             logout:
                 path: app_logout
                 # where to redirect after logout
-                # target: app_any_route
+                target: app_login
+            user_checker: App\Security\UserChecker
             # access_denied_url: test_denied
 
             # activate different ways to authenticate

@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -25,7 +26,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * 
+     * @Assert\NotBlank(message="Veuillez saisir une valeur.")
+     * @Assert\Email(message="L'email {{ value }} n'est pas valide.")
      */
     private string $email;
 
@@ -38,6 +40,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Veuillez saisir une valeur.")
+     * @Assert\NotCompromisedPassword(message="Ce mot de passe a été divulgué lors d'une fuite de données, veuillez utiliser un autre mot de passe pour votre sécurité.")
+     * @Assert\Regex(pattern="/^(?=.*[a-zà-ÿ])(?=.*[A-ZÀ-Ý])(?=.*[0-9])(?=.*[^a-zà-ÿA-ZÀ-Ý0-9]).{12,}$/", message="Le mot de passe doit être composé de minimum 12 caractères dont 1 lettre majuscule, 1 lettre minuscule, 1 chiffre, et un caractère spécial (dans un ordre aléatoire).")
      */
     private string $password;
 
@@ -218,7 +223,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAccountMustBeVerifiedBefore(): ?\DateTimeImmutable
+    public function getAccountMustBeVerifiedBefore(): \DateTimeImmutable
     {
         return $this->accountMustBeVerifiedBefore;
     }
@@ -242,7 +247,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getIsVerified(): ?bool
+    public function getIsVerified(): bool
     {
         return $this->isVerified;
     }
