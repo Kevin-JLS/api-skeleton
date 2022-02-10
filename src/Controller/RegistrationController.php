@@ -43,6 +43,8 @@ class RegistrationController extends AbstractController
 
             $entityManager->flush();
 
+            // dd("Je stoppe le processus d'inscription ici pour ne pas envoyer d'email.");
+
             $sendEmail->send([
               'recipient_email' => $user->getEmail(),
               'subject'         => "Vérification de votre adresse e-mail pour activer votre compte utilisateur",

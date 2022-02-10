@@ -17,6 +17,16 @@
             {{ form_row(registrationForm.email) }}
             {{ form_row(registrationForm.password) }}
             {{ form_row(registrationForm.agreeTerms) }}
+            <fieldset class="sweet-candy">
+                {{ form_label(registrationForm.phone) }}
+                {{ form_errors(registrationForm.phone) }}
+                {{ form_widget(registrationForm.phone) }}
+            </fieldset>
+            <fieldset class="sweet-candy">
+                {{ form_label(registrationForm.faxNumber) }}
+                {{ form_errors(registrationForm.faxNumber) }}
+                {{ form_widget(registrationForm.faxNumber) }}
+            </fieldset>
 
             <button type="submit" class="btn btn-primary">S'inscrire</button>
 
