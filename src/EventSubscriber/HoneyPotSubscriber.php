@@ -25,7 +25,8 @@ class HoneyPotSubscriber implements EventSubscriberInterface {
         
     }
 
-    public static function getSubscribedEvents()
+    /** @return array<string> */
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::PRE_SUBMIT => 'checkHoneyJar'

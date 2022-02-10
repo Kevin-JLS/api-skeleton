@@ -28,6 +28,13 @@ class HoneyPotType extends AbstractType
     protected const DELICIOUS_HONEY_CANDY_FOR_BOT = "phone";
     protected const FABULOUS_HONEY_CANDY_FOR_BOT = "faxNumber";
     
+    /**
+     * Build a form with HTML attributes and add an EventSubscriber
+     * 
+     * @param FormBuilderInterface<callable> $builder
+     * @param array<mixed> $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add(self::DELICIOUS_HONEY_CANDY_FOR_BOT, TextType::class, $this->setHoneyPotFieldConfiguration())
@@ -35,6 +42,11 @@ class HoneyPotType extends AbstractType
                 ->addEventSubscriber(new HoneyPotSubscriber($this->honeyPotLogger, $this->requestStack));
     }
 
+    /**
+     * Set field attributes to honey pot for bot fields
+     * 
+     * @return array<mixed>
+     */
     protected function setHoneyPotFieldConfiguration(): array{
         return [
             'attr' => [

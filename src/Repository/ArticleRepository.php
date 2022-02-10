@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Article;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +20,24 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    // /**
-    //  * @return Article[] Returns an array of Article objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getCountOfArticlesCreated(User $user): int 
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->createQueryBuilder('ac')
+                    ->select('COUNT(ac)')
+                    ->where('ac.author = :author')
+                    ->setParameter('author', $user)
+                    ->getQuery()
+                    ->getSingleScalarResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Article
+    public function getCountOfArticlesPublished(User $user): int
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this->createQueryBuilder('ap')
+                    ->select('COUNT(ap)')
+                    ->where('ap.author = :author')
+                    ->andwhere('ap.isPublished = :author')
+                    ->setParameter('author', $user)
+                    ->getQuery()
+                    ->getSingleScalarResult();
     }
-    */
 }
