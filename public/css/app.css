@@ -1,3 +1,4 @@
+/* Hidden fields in forms (honey pot) */
 fieldset.sweet-candy {
     opacity: 0;
     position: absolute;
@@ -6,4 +7,9 @@ fieldset.sweet-candy {
     height: 0;
     width: 0;
     z-index: -1;
+}
+
+/* Used in user account profile page. */
+table.table tbody td {
+    vertical-align: middle;
 }

@@ -26,7 +26,7 @@ class UserAccountAreaController extends AbstractController
     } 
 
     /**
-     * @Route("home", name="home", methods={"GET})
+     * @Route("home", name="home", methods={"GET"})
      */
     public function home(ArticleRepository $articleRepository): Response
     {

@@ -37,13 +37,13 @@
                     </td>
                     <td>
                         <fieldset class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="check_user_ip_checkbox" data-url="{{ path('app_user_account_profile_toogle_checking_IP') }}">
-                            <label class="custom-control-label" for="check_user_ip_checkbox">Inactive</label>
+                            <input type="checkbox" class="custom-control-input" id="check_user_ip_checkbox" data-url="{{ path('app_user_account_profile_toggle_checking_IP') }}" {{ user.isGuardCheckIp ? 'checked' : null}} >
+                            <label class="custom-control-label" for="check_user_ip_checkbox">{{ user.userGuardCheckIp ? "Active" : "Inactive" }}Inactive</label>
                         </fieldset>
                     </td>
                     <td>
                         <p id="user_ip_addresses">{{ user.whitelistedIpAddresses|join(' | ') }}</p>
-                        <button type="button" class="btn btn-sm btn-warning m-3" id="add_current_ip_to_whitelist_button" data-url="{{ path('app_user_account_profile_add_IP') }}">Ajouter mon adresse IP actuelle</button>
+                        <button type="button" class="btn btn-sm btn-warning m-3" id="add_current_ip_to_whitelist_button" data-url="{{ path('app_user_account_profile_add-IP') }}">Ajouter mon adresse IP actuelle</button>
                     </td>
                 </tbody>
             </table>
