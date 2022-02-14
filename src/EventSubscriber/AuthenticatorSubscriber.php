@@ -4,6 +4,8 @@ namespace App\EventSubscriber;
 
 use App\Entity\User;
 use Psr\Log\LoggerInterface;
+use App\Security\BruteForceChecker;
+use App\Repository\AuthLogRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Http\SecurityEvents;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,6 +22,9 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class AuthenticatorSubscriber implements EventSubscriberInterface
 {
+    private AuthLogRepository $authLogRepository;
+
+    private BruteForceChecker $bruteForceChecker;
 
     private LoggerInterface $securityLogger;
 
@@ -27,11 +32,15 @@ class AuthenticatorSubscriber implements EventSubscriberInterface
 
     public function __construct(
         LoggerInterface $securityLogger,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        AuthLogRepository $authLogRepository,
+        BruteForceChecker $bruteForceChecker
     )
     {
         $this->securityLogger = $securityLogger;
         $this->requestStack = $requestStack;
+        $this->authLogRepository = $authLogRepository;
+        $this->bruteForceChecker = $bruteForceChecker;
     }
 
     /** @return array<string> */
@@ -59,6 +68,8 @@ class AuthenticatorSubscriber implements EventSubscriberInterface
         ['email' => $emailEntered] = $securityToken->getCredentials();
 
         $this->securityLogger->info("Un utilisateur ayant ladresse IP '{$userIP}' a tenté de s'authentifier sans succés avec l'email suivant : '{$emailEntered}' ");
+
+        $this->bruteForceChecker->addFailedAuthAttempt($emailEntered, $userIP);
     }
 
     public function onSecurityAuthenticationSuccess(AuthenticationSuccessEvent $event): void
@@ -77,6 +88,7 @@ class AuthenticatorSubscriber implements EventSubscriberInterface
 
             $userEmail = $this->getUserEmail($securityToken);
 
+
             $this->securityLogger->info("Un utilisateur anonyme ayant l'adresse IP '{$userIP}' a évolué en entité User avec l'email '{$userEmail}'.");
         }
     }
@@ -90,8 +102,17 @@ class AuthenticatorSubscriber implements EventSubscriberInterface
 
         $userEmail = $this->getUserEmail($securityToken);
 
-        $this->securityLogger->info("Un utilisateur anonyme ayant l'adresse IP '{$userIP}' a évolué en entité User avec l'email '{$userEmail}'.");
+        $request = $this->requestStack->getCurrentRequest();
 
+        if($request && $request->cookies->get('REMEMBERME')) {
+            $this->securityLogger->info("Un utilisateur anonyme ayant l'adresse IP '{$userIP}' a évolué en entité User avec l'email '{$userEmail}' grâce à REMEMBERME cookie.");
+
+            $this->authLogRepository->addSuccessfulAuthAttempt($userEmail, $userIP, true);
+        } else {
+            $this->securityLogger->info("Un utilisateur anonyme ayant l'adresse IP '{$userIP}' a évolué en entité User avec l'email '{$userEmail}' grâce à REMEMBERME cookie.");
+
+            $this->authLogRepository->addSuccessfulAuthAttempt($userEmail, $userIP);
+        }
     }
 
     public function onSecurityLogout(LogoutEvent $event): void

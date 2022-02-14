@@ -53,7 +53,7 @@ class HoneyPotType extends AbstractType
                 'autocomplete' => 'off',
                 'tabindex'     => '-1'
             ],
-            'data'      => 'fake data', // WARNING DELETE THIS LINE AFTER TESTS !
+            'data'      => '', // WARNING DELETE THIS LINE AFTER TESTS !
             'mapped'    => false,
             'required'  => false
         ];

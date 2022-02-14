@@ -352,7 +352,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /** 
-     * @param string|null $whitelistedIpAddresses
+     * @param null|string $whitelistedIpAddresses
      */
     public function setWhitelistedIpAddresses(?string $whitelistedIpAddresses): self
     {
